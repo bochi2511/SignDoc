@@ -31,7 +31,10 @@ namespace SignDoc
             keyInfo.AddClause(new RSAKeyValue((RSA)Key));
             if (cert != null)
             {
-                keyInfo.AddClause(new KeyInfoX509Data(cert, X509IncludeOption.EndCertOnly));
+                KeyInfoX509Data kinfox509 = new KeyInfoX509Data(cert, X509IncludeOption.EndCertOnly);
+                kinfox509.AddIssuerSerial(cert.Issuer, cert.SerialNumber);
+                kinfox509.AddSubjectName(cert.Subject);
+                keyInfo.AddClause(kinfox509);
             }
             signedXml.KeyInfo = keyInfo;
 
