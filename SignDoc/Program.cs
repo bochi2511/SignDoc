@@ -29,7 +29,144 @@ namespace SignDoc
         public const String KeyContainerName = "p11#a28222455077f707";
         public const String StoreFileName = "certificado.pfx";
         public const String StorePasswd = "morocho2511";
+        private static readonly int GENERAL_PROGRAM_ERROR = 1;
+        private static readonly int BAD_PARAMETER_ERROR = 2;
+
         static void Main(string[] args)
+        {
+            Test();
+            if (args.Length < 1)
+            {
+                ExitWithBadParams();
+            }
+            /*
+            args[0] = mode := signpdffile|signpdftoken|signtifffile|signtifftoken|validatetiff|validatepdf 
+            */
+            System.Console.WriteLine("Starting SignDoc in mode:" + args[0]);
+            if ("signpdffile".Equals(args[0]))
+            {
+                ParseSignPdfFile(args);
+            }
+            else if ("signpdftoken".Equals(args[0]))
+            {
+                ParseSignPdfToken(args);
+            }
+            else if ("signtifffile".Equals(args[0]))
+            {
+                ParseSignTiffFile(args);
+            }
+            else if ("signtifftoken".Equals(args[0]))
+            {
+                ParseSignTiffToken(args);
+            }
+            else if ("validatetiff".Equals(args[0]))
+            {
+                ParseValiedateTiff(args);
+            }
+            else if ("validatepdf".Equals(args[0]))
+            {
+                ParseValiedatePdf(args);
+            } else
+            {
+                ExitWithBadParams();
+            }
+            System.Console.WriteLine("SignDoc ends");
+            System.Environment.Exit(0);
+        }
+
+        /*
+        args[1] pdf file input
+        args[2] pdf file output
+        args[3] token password
+        
+        */
+
+        private static void ParseValiedatePdf(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ParseValiedateTiff(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ParseSignTiffToken(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ParseSignTiffFile(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ParseSignPdfToken(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ParseSignPdfFile(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ExitWithBadParams()
+        {
+            System.Console.WriteLine("Error bad parameters");
+            System.Console.WriteLine("Use: SignDoc ");
+            System.Environment.Exit(BAD_PARAMETER_ERROR);
+        }
+
+        private static int SignPDFKeyInFile(string pdfInPath,
+                                            string pdfOutPath,
+                                            string keyFile,
+                                            string keyFilePassword)
+        {
+
+            return GENERAL_PROGRAM_ERROR;
+        }
+
+        private static int SignPDFKeyInToken(string pdfInPath,
+                                             string pdfOutPath,
+                                             string tokenPassword)
+        {
+
+            return GENERAL_PROGRAM_ERROR;
+        }
+
+        private static int SignTIFFKeyInFile(string tiffInPath,
+                                             string xmlOutPath,
+                                             string keyFile,
+                                             string keyFilePassword)
+        {
+
+            return GENERAL_PROGRAM_ERROR;
+        }
+
+        private static int SignTIFFKeyInToken(string tdfInPath,
+                                              string xmlOutPath,
+                                              string tokenPassword)
+        {
+
+            return GENERAL_PROGRAM_ERROR;
+        }
+
+        private static int ValidateSignaturePDF(string pdfInPath)
+        {
+
+            return GENERAL_PROGRAM_ERROR;
+        }
+
+        private static int ValidateSignatureTIFF(string tdfInPath,
+                                                 string xmlInSignature)
+        {
+
+            return GENERAL_PROGRAM_ERROR;
+        }
+
+
+        static void Test()
         {
             /* ************************************************************************
 
@@ -92,7 +229,7 @@ namespace SignDoc
                 Console.WriteLine("Certificate not found");
                 return;
             }
-            SignPdfToken("prueba.pdf", "prueba-firma-token.pdf", "Motivo", "Ubicación", cert);
+            PdfSignature.SignPdfToken("prueba.pdf", "prueba-firma-token.pdf", "Motivo", "Ubicación", cert);
 
             /***********************************************************************************************
 
@@ -108,7 +245,7 @@ namespace SignDoc
 
             // Sign the detached resourceand save the signature in an XML file.
 
-            SignDetachedResource(Ref1, XmlSigFileName1, tokenKey, cert);
+            TiffSignature.SignDetachedResource(Ref1, XmlSigFileName1, tokenKey, cert);
 
 
             /***********************************************************************************************
@@ -135,7 +272,7 @@ namespace SignDoc
             {
                 chain.Add(entry.Certificate);
             }
-            SignPdfCert("prueba.pdf", "prueba-firma-cert.pdf", "Motivo", "Ubicacion", chain, pk);
+            PdfSignature.SignPdfCert("prueba.pdf", "prueba-firma-cert.pdf", "Motivo", "Ubicacion", chain, pk);
 
             fs.Close();
 
@@ -154,112 +291,11 @@ namespace SignDoc
 
             // Sign the detached resourceand save the signature in an XML file.
 
-            SignDetachedResource(Ref, XmlSigFileName, Key, certxml);
+            TiffSignature.SignDetachedResource(Ref, XmlSigFileName, Key, certxml);
 
 
         }
-        private static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert)
-        {
-            //Org.BouncyCastle.X509.X509CertificateParser cp = new Org.BouncyCastle.X509.X509CertificateParser();
-            //Org.BouncyCastle.X509.X509Certificate[] chain = new Org.BouncyCastle.X509.X509Certificate[] { cp.ReadCertificate(cert.RawData) };
-            IList<X509Certificate> chain = new List<X509Certificate>();
-            X509Chain x509chain = new X509Chain();
-            x509chain.Build(cert);
-            foreach (X509ChainElement x509ChainElement in x509chain.ChainElements)
-            {
-                chain.Add(DotNetUtilities.FromX509Certificate(x509ChainElement.Certificate));
-            }
-            IExternalSignature externalSignature = new X509Certificate2Signature(cert, DigestAlgorithms.SHA512);
-            PdfReader pdfReader = new PdfReader(SRC);
-            FileStream signedPdf = new FileStream(DEST, FileMode.Create);  //the output pdf file
-            PdfStamper pdfStamper = PdfStamper.CreateSignature(pdfReader, signedPdf, '\0');
-            PdfSignatureAppearance signatureAppearance = pdfStamper.SignatureAppearance;
-            //here set signatureAppearance at your will
-            signatureAppearance.Reason = Reason;
-            signatureAppearance.Location = Location;
-            signatureAppearance.SetVisibleSignature(new Rectangle(36, 748, 144, 780), 1, "sig");
-            //signatureAppearance.SignatureRenderingMode = PdfSignatureAppearance.RenderingMode.DESCRIPTION;
-            MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CMS);
-            //MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CADES);
-        }
-
-        private static void SignPdfCert(String SRC, String DEST, String Reason, String Location, ICollection<X509Certificate> chain, ICipherParameters pk)
-        {
-            //Org.BouncyCastle.X509.X509CertificateParser cp = new Org.BouncyCastle.X509.X509CertificateParser();
-            //Org.BouncyCastle.X509.X509Certificate[] chain = new Org.BouncyCastle.X509.X509Certificate[] { cp.ReadCertificate(cert.RawData) };
-
-            IExternalSignature externalSignature = new PrivateKeySignature(pk, DigestAlgorithms.SHA512);
-            PdfReader pdfReader = new PdfReader(SRC);
-            FileStream signedPdf = new FileStream(DEST, FileMode.Create);  //the output pdf file
-            PdfStamper pdfStamper = PdfStamper.CreateSignature(pdfReader, signedPdf, '\0');
-            PdfSignatureAppearance signatureAppearance = pdfStamper.SignatureAppearance;
-            //here set signatureAppearance at your will
-            signatureAppearance.Reason = Reason;
-            signatureAppearance.Location = Location;
-            signatureAppearance.SetVisibleSignature(new Rectangle(36, 748, 144, 780), 1, "sig");
-            //signatureAppearance.SignatureRenderingMode = PdfSignatureAppearance.RenderingMode.DESCRIPTION;
-            MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CMS);
-            //MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CADES);
-        }
-        public static void SignDetachedResource(string ReferenceString, string XmlSigFileName, RSA Key, X509Certificate2 cert)
-        {
-            // Create a SignedXml object.
-            SignedXml signedXml = new SignedXml();
-
-            // Assign the key to the SignedXml object.
-            signedXml.SigningKey = Key;
-
-            // Create a reference to be signed.
-            Reference reference = new Reference();
-
-            // Add the passed Refrence to the reference object.
-            reference.Uri = ReferenceString;
-
-            // Add the reference to the SignedXml object.
-            signedXml.AddReference(reference);
-
-            // Add an RSAKeyValue KeyInfo (optional; helps recipient find key to validate).
-            KeyInfo keyInfo = new KeyInfo();
-            keyInfo.AddClause(new RSAKeyValue((RSA)Key));
-            if (cert != null)
-            {
-                keyInfo.AddClause(new KeyInfoX509Data(cert, X509IncludeOption.EndCertOnly));
-            }
-            signedXml.KeyInfo = keyInfo;
-
-            // Compute the signature.
-            signedXml.ComputeSignature();
-
-            // Get the XML representation of the signature and save
-            // it to an XmlElement object.
-            XmlElement xmlDigitalSignature = signedXml.GetXml();
-
-            // Save the signed XML document to a file specified
-            // using the passed string.
-            XmlTextWriter xmltw = new XmlTextWriter(XmlSigFileName, new UTF8Encoding(false));
-            xmlDigitalSignature.WriteTo(xmltw);
-            xmltw.Close();
-        }
-        public static Boolean VerifyDetachedSignature(string XmlSigFileName)
-        {
-            // Create a new XML document.
-            XmlDocument xmlDocument = new XmlDocument();
-
-            // Load the passed XML file into the document.
-            xmlDocument.Load(XmlSigFileName);
-
-            // Create a new SignedXMl object.
-            SignedXml signedXml = new SignedXml();
-
-            // Find the "Signature" node and create a new 
-            // XmlNodeList object.
-            XmlNodeList nodeList = xmlDocument.GetElementsByTagName("Signature");
-
-            // Load the signature node.
-            signedXml.LoadXml((XmlElement)nodeList[0]);
-
-            // Check the signature and return the result. 
-            return signedXml.CheckSignature();
-        }
+        
+        
     }
 }
