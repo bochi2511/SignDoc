@@ -1,25 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Security;
 using System.Security.Cryptography;
-using System.Security.Cryptography.Xml;
 using System.Security.Cryptography.X509Certificates;
 
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.security;
+
 using System.IO;
 
-using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Pkcs;
 
 using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
-using System.Xml;
 
 namespace SignDoc
 {
@@ -43,43 +34,45 @@ namespace SignDoc
             args[0] = mode := signpdffile|signpdftoken|signtifffile|signtifftoken|validatetiff|validatepdf 
             */
             System.Console.WriteLine("Starting SignDoc in mode:" + args[0]);
-            if ("signpdffile".Equals(args[0]))
+            try
             {
-                ParseSignPdfFile(args);
-            }
-            else if ("signpdftoken".Equals(args[0]))
+                if ("signpdffile".Equals(args[0]))
+                {
+                    ParseSignPdfFile(args);
+                }
+                else if ("signpdftoken".Equals(args[0]))
+                {
+                    ParseSignPdfToken(args);
+                }
+                else if ("signtifffile".Equals(args[0]))
+                {
+                    ParseSignTiffFile(args);
+                }
+                else if ("signtifftoken".Equals(args[0]))
+                {
+                    ParseSignTiffToken(args);
+                }
+                else if ("validatetiff".Equals(args[0]))
+                {
+                    ParseValiedateTiff(args);
+                }
+                else if ("validatepdf".Equals(args[0]))
+                {
+                    ParseValiedatePdf(args);
+                }
+                else
+                {
+                    ExitWithBadParams();
+                }
+            } catch (Exception e )
             {
-                ParseSignPdfToken(args);
-            }
-            else if ("signtifffile".Equals(args[0]))
-            {
-                ParseSignTiffFile(args);
-            }
-            else if ("signtifftoken".Equals(args[0]))
-            {
-                ParseSignTiffToken(args);
-            }
-            else if ("validatetiff".Equals(args[0]))
-            {
-                ParseValiedateTiff(args);
-            }
-            else if ("validatepdf".Equals(args[0]))
-            {
-                ParseValiedatePdf(args);
-            } else
-            {
-                ExitWithBadParams();
+
             }
             System.Console.WriteLine("SignDoc ends");
             System.Environment.Exit(0);
         }
 
-        /*
-        args[1] pdf file input
-        args[2] pdf file output
-        args[3] token password
-        
-        */
+       
 
         private static void ParseValiedatePdf(string[] args)
         {
@@ -101,9 +94,26 @@ namespace SignDoc
             throw new NotImplementedException();
         }
 
+        /*
+       args[1] pdf file input
+       args[2] pdf file output
+       args[3] token password
+       */
         private static void ParseSignPdfToken(string[] args)
         {
-            throw new NotImplementedException();
+            if (!Validator.FileExist(args[1]))
+            {
+                throw new FileNotFoundException(args[1]);
+            }
+            if (args[2] == null || "".Equals(args[3]))
+            {
+
+            }
+            if (args[3] == null || "".Equals(args[3]))
+            {
+
+            }
+
         }
 
         private static void ParseSignPdfFile(string[] args)
