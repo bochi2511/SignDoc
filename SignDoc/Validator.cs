@@ -11,7 +11,7 @@ namespace SignDoc
         public static bool FileExist(string filepath)
         {
 
-            return false;
+            return true;
         }
     }
 }

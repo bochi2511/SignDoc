@@ -16,12 +16,10 @@ namespace SignDoc
 {
     class Program
     {
-        public const String ProviderName = "eToken Base Cryptographic Provider";
-        public const String KeyContainerName = "p11#a28222455077f707";
-        public const String StoreFileName = "certificado.pfx";
-        public const String StorePasswd = "morocho2511";
+ 
         private static readonly int GENERAL_PROGRAM_ERROR = 1;
         private static readonly int BAD_PARAMETER_ERROR = 2;
+        private static readonly int SIGNATURE_VERIFICATION_FAILED = 3;
 
         public static void Main(string[] args)
         {
@@ -64,29 +62,47 @@ namespace SignDoc
                 {
                     ExitWithBadParams();
                 }
-            } catch (Exception e )
-            {
-
             }
-            System.Console.WriteLine("SignDoc ends");
-            System.Environment.Exit(0);
+            catch (SignatureVerificacionException e)
+            {
+                System.Console.WriteLine("SignDoc ends with exception " + e.Message);
+                System.Environment.Exit(SIGNATURE_VERIFICATION_FAILED);
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine("SignDoc ends with exception " +  e.Message);
+                System.Environment.Exit(GENERAL_PROGRAM_ERROR);
+            }
+            Environment.Exit(0);
         }
 
        
 
         private static void ParseValiedatePdf(string[] args)
         {
-            throw new NotImplementedException();
+            
         }
 
+        /*
+        args[1] tiff file input
+        */
         private static void ParseValiedateTiff(string[] args)
         {
-            throw new NotImplementedException();
+            if (!TiffSignature.VerifyDetachedSignature(args[1]))
+            {
+                Console.WriteLine(args[1] + " fallo verificacion");
+                throw new SignatureVerificacionException();
+            }
         }
 
+        /*
+        args[1] tiff file input
+        args[2] xmlSignature file output
+        args[3] tokenPassword
+        */
         private static void ParseSignTiffToken(string[] args)
         {
-            throw new NotImplementedException();
+            TiffSignature.SignDetachedResourceWithToken(args[0], args[1], args[2]);
         }
 
         /*
@@ -127,13 +143,13 @@ namespace SignDoc
         }
 
         /*
-      args[1] pdf file input
-      args[2] pdf file output
-      args[3] reason
-      args[4] location
-      args[5] CertFile
-      args[6] CertPassword
-      */
+        args[1] pdf file input
+        args[2] pdf file output
+        args[3] reason
+        args[4] location
+        args[5] CertFile
+        args[6] CertPassword
+        */
         private static void ParseSignPdfFile(string[] args)
         {
             PdfSignature.SignPdfCert(args[1], args[2], args[3],args[4], args[6], args[5]);
@@ -146,183 +162,7 @@ namespace SignDoc
             System.Environment.Exit(BAD_PARAMETER_ERROR);
         }
 
-        private static int SignPDFKeyInFile(string pdfInPath,
-                                            string pdfOutPath,
-                                            string keyFile,
-                                            string keyFilePassword)
-        {
-
-            return GENERAL_PROGRAM_ERROR;
-        }
-
-        private static int SignPDFKeyInToken(string pdfInPath,
-                                             string pdfOutPath,
-                                             string tokenPassword)
-        {
-
-            return GENERAL_PROGRAM_ERROR;
-        }
-
-        private static int SignTIFFKeyInFile(string tiffInPath,
-                                             string xmlOutPath,
-                                             string keyFile,
-                                             string keyFilePassword)
-        {
-
-            return GENERAL_PROGRAM_ERROR;
-        }
-
-        private static int SignTIFFKeyInToken(string tdfInPath,
-                                              string xmlOutPath,
-                                              string tokenPassword)
-        {
-
-            return GENERAL_PROGRAM_ERROR;
-        }
-
-        private static int ValidateSignaturePDF(string pdfInPath)
-        {
-
-            return GENERAL_PROGRAM_ERROR;
-        }
-
-        private static int ValidateSignatureTIFF(string tdfInPath,
-                                                 string xmlInSignature)
-        {
-
-            return GENERAL_PROGRAM_ERROR;
-        }
-
-
-        static void Test()
-        {
-            /* ************************************************************************
-
-                        Sign PDF with Token
-
-            **************************************************************************/
-
-            var pass = new SecureString();
-            pass.AppendChar('Y');
-            pass.AppendChar('a');
-            pass.AppendChar('n');
-            pass.AppendChar('e');
-            pass.AppendChar('r');
-            pass.AppendChar('i');
-            pass.AppendChar('L');
-            pass.AppendChar('2');
-            pass.AppendChar('1');
-            pass.AppendChar('1');
-            pass.AppendChar('0');
-
-            CspParameters csp = new CspParameters(1,
-                                                    ProviderName,
-                                                    KeyContainerName,
-                                                    new System.Security.AccessControl.CryptoKeySecurity(),
-                                                    pass);
-            try
-            {
-                RSACryptoServiceProvider rsaCsp = new RSACryptoServiceProvider(csp);
-                // the pin code will be cached for next access to the smart card
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Crypto error: " + ex.Message);
-                return;
-            }
-
-            X509Store store = new X509Store("My");
-            store.Open(OpenFlags.ReadOnly);
-            X509Certificate2 cert = null;
-
-            foreach (X509Certificate2 cert2 in store.Certificates)
-            {
-                if (cert2.HasPrivateKey)
-                {
-                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)cert2.PrivateKey;
-                    if (rsa == null) continue; // not smart card cert again
-                    if (rsa.CspKeyContainerInfo.HardwareDevice) // sure - smartcard
-                    {
-                        if ((rsa.CspKeyContainerInfo.KeyContainerName == KeyContainerName) && (rsa.CspKeyContainerInfo.ProviderName == ProviderName))
-                        {
-                            //we find it
-                            cert = cert2;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (cert == null)
-            {
-                Console.WriteLine("Certificate not found");
-                return;
-            }
-            //PdfSignature.SignPdfToken("prueba.pdf", "prueba-firma-token.pdf", "Motivo", "Ubicación", cert);
-
-            /***********************************************************************************************
-
-                    Sign binary file with XML Signature with token
-                    Using previous example Key and cert
-            
-            ***********************************************************************************************/
-
-            RSACryptoServiceProvider tokenKey = (RSACryptoServiceProvider)cert.PrivateKey;
-
-            String Ref1 = "27542.tif";
-            String XmlSigFileName1 = Ref1 + ".firmaToken.xml";
-
-            // Sign the detached resourceand save the signature in an XML file.
-
-            //TiffSignature.SignDetachedResource(Ref1, XmlSigFileName1, tokenKey, cert);
-
-
-            /***********************************************************************************************
-
-                            Sign PDF with certificate in file (PKCS12)
-
-            ************************************************************************************************/
-
-            Pkcs12Store p12ks = new Pkcs12Store();
-            FileStream fs = new FileStream(StoreFileName, FileMode.Open);
-            p12ks.Load(fs, StorePasswd.ToCharArray());
-            String alias = "";
-            foreach (String al in p12ks.Aliases)
-            {
-                if (p12ks.IsKeyEntry(al) && p12ks.GetKey(al).Key.IsPrivate)
-                {
-                    alias = al;
-                    break;
-                }
-            }
-            AsymmetricKeyParameter pk = p12ks.GetKey(alias).Key;
-            ICollection<X509Certificate> chain = new List<X509Certificate>();
-            foreach (X509CertificateEntry entry in p12ks.GetCertificateChain(alias))
-            {
-                chain.Add(entry.Certificate);
-            }
-            //sPdfSignature.SignPdfCert("prueba.pdf", "prueba-firma-cert.pdf", "Motivo", "Ubicacion", chain, pk);
-
-            fs.Close();
-
-            /**********************************************************************************************
-
-                                Sign Binary File as XML Signature with pkcs12 certificate file
-                                
-            **********************************************************************************************/
-
-            X509Certificate2 certxml = new X509Certificate2(StoreFileName, StorePasswd);
-
-            RSACryptoServiceProvider Key = (RSACryptoServiceProvider)certxml.PrivateKey;
-
-            String Ref = "27542.tif";
-            String XmlSigFileName = Ref + ".firma.xml";
-
-            // Sign the detached resourceand save the signature in an XML file.
-
-            //TiffSignature.SignDetachedResource(Ref, XmlSigFileName, Key, certxml);
-
-
-        }
+       
         
         
     }

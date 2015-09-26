@@ -59,6 +59,7 @@
     <Compile Include="PdfSignature.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SignatureVerificacionException.cs" />
     <Compile Include="TiffSignature.cs" />
     <Compile Include="Validator.cs" />
   </ItemGroup>
