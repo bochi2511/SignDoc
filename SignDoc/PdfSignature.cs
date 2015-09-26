@@ -2,10 +2,13 @@
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.security;
 using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
 
@@ -13,8 +16,31 @@ namespace SignDoc
 {
     class PdfSignature
     {
-        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert)
+        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword)
         {
+            var pass = new SecureString();
+            foreach (char c in tokenPassword.ToCharArray())
+            {
+                pass.AppendChar(c);
+            }
+            
+
+            CspParameters csp = new CspParameters(1,
+                                                    CertUtils.ProviderName,
+                                                    CertUtils.KeyContainerName,
+                                                    new System.Security.AccessControl.CryptoKeySecurity(),
+                                                    pass);
+            try
+            {
+                RSACryptoServiceProvider rsaCsp = new RSACryptoServiceProvider(csp);
+                // the pin code will be cached for next access to the smart card
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Crypto error: " + ex.Message);
+                return;
+            }
+
             //Org.BouncyCastle.X509.X509CertificateParser cp = new Org.BouncyCastle.X509.X509CertificateParser();
             //Org.BouncyCastle.X509.X509Certificate[] chain = new Org.BouncyCastle.X509.X509Certificate[] { cp.ReadCertificate(cert.RawData) };
             IList<X509Certificate> chain = new List<X509Certificate>();
@@ -38,8 +64,28 @@ namespace SignDoc
             //MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CADES);
         }
 
-        public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, ICollection<X509Certificate> chain, ICipherParameters pk)
+        public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile)
         {
+            Pkcs12Store p12ks = new Pkcs12Store();
+            FileStream fs = new FileStream(certFile, FileMode.Open);
+            p12ks.Load(fs, certPassword.ToCharArray());
+            String alias = "";
+            foreach (String al in p12ks.Aliases)
+            {
+                if (p12ks.IsKeyEntry(al) && p12ks.GetKey(al).Key.IsPrivate)
+                {
+                    alias = al;
+                    break;
+                }
+            }
+            AsymmetricKeyParameter pk = p12ks.GetKey(alias).Key;
+            ICollection<X509Certificate> chain = new List<X509Certificate>();
+            foreach (X509CertificateEntry entry in p12ks.GetCertificateChain(alias))
+            {
+                chain.Add(entry.Certificate);
+            }
+
+            fs.Close();
             //Org.BouncyCastle.X509.X509CertificateParser cp = new Org.BouncyCastle.X509.X509CertificateParser();
             //Org.BouncyCastle.X509.X509Certificate[] chain = new Org.BouncyCastle.X509.X509Certificate[] { cp.ReadCertificate(cert.RawData) };
 

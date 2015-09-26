@@ -23,9 +23,9 @@ namespace SignDoc
         private static readonly int GENERAL_PROGRAM_ERROR = 1;
         private static readonly int BAD_PARAMETER_ERROR = 2;
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Test();
+            //Test();
             if (args.Length < 1)
             {
                 ExitWithBadParams();
@@ -89,15 +89,23 @@ namespace SignDoc
             throw new NotImplementedException();
         }
 
+        /*
+     args[1] tiff file input
+     args[2] xmlSignature file output
+     args[3] CertFile
+     args[4] CertPassword
+     */
         private static void ParseSignTiffFile(string[] args)
         {
-            throw new NotImplementedException();
+            TiffSignature.SignDetachedResource(args[1], args[2], args[3], args[4]);
         }
 
         /*
        args[1] pdf file input
        args[2] pdf file output
        args[3] token password
+       args[4] reason
+       args[5] location
        */
         private static void ParseSignPdfToken(string[] args)
         {
@@ -114,11 +122,21 @@ namespace SignDoc
 
             }
 
+            PdfSignature.SignPdfToken(args[1], args[2], args[4], args[5], CertUtils.GetCertToken(), args[3]);
+
         }
 
+        /*
+      args[1] pdf file input
+      args[2] pdf file output
+      args[3] reason
+      args[4] location
+      args[5] CertFile
+      args[6] CertPassword
+      */
         private static void ParseSignPdfFile(string[] args)
         {
-            throw new NotImplementedException();
+            PdfSignature.SignPdfCert(args[1], args[2], args[3],args[4], args[6], args[5]);
         }
 
         private static void ExitWithBadParams()
@@ -239,7 +257,7 @@ namespace SignDoc
                 Console.WriteLine("Certificate not found");
                 return;
             }
-            PdfSignature.SignPdfToken("prueba.pdf", "prueba-firma-token.pdf", "Motivo", "Ubicación", cert);
+            //PdfSignature.SignPdfToken("prueba.pdf", "prueba-firma-token.pdf", "Motivo", "Ubicación", cert);
 
             /***********************************************************************************************
 
@@ -255,7 +273,7 @@ namespace SignDoc
 
             // Sign the detached resourceand save the signature in an XML file.
 
-            TiffSignature.SignDetachedResource(Ref1, XmlSigFileName1, tokenKey, cert);
+            //TiffSignature.SignDetachedResource(Ref1, XmlSigFileName1, tokenKey, cert);
 
 
             /***********************************************************************************************
@@ -282,7 +300,7 @@ namespace SignDoc
             {
                 chain.Add(entry.Certificate);
             }
-            PdfSignature.SignPdfCert("prueba.pdf", "prueba-firma-cert.pdf", "Motivo", "Ubicacion", chain, pk);
+            //sPdfSignature.SignPdfCert("prueba.pdf", "prueba-firma-cert.pdf", "Motivo", "Ubicacion", chain, pk);
 
             fs.Close();
 
@@ -301,7 +319,7 @@ namespace SignDoc
 
             // Sign the detached resourceand save the signature in an XML file.
 
-            TiffSignature.SignDetachedResource(Ref, XmlSigFileName, Key, certxml);
+            //TiffSignature.SignDetachedResource(Ref, XmlSigFileName, Key, certxml);
 
 
         }

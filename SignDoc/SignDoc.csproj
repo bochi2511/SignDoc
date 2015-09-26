@@ -32,6 +32,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugPDFCertFile|AnyCPU'">
+    <OutputPath>bin\DebugPDFCertFile\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>SignDoc.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="itextsharp, Version=5.5.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -48,6 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CertificateNotFoundInTokenException.cs" />
+    <Compile Include="CertUtils.cs" />
     <Compile Include="PdfSignature.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

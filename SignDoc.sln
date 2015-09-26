@@ -8,11 +8,14 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		DebugPDFCertFile|Any CPU = DebugPDFCertFile|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{06F15F78-3E59-48A3-A7E8-7CC7F11FE72E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{06F15F78-3E59-48A3-A7E8-7CC7F11FE72E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06F15F78-3E59-48A3-A7E8-7CC7F11FE72E}.DebugPDFCertFile|Any CPU.ActiveCfg = DebugPDFCertFile|Any CPU
+		{06F15F78-3E59-48A3-A7E8-7CC7F11FE72E}.DebugPDFCertFile|Any CPU.Build.0 = DebugPDFCertFile|Any CPU
 		{06F15F78-3E59-48A3-A7E8-7CC7F11FE72E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06F15F78-3E59-48A3-A7E8-7CC7F11FE72E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

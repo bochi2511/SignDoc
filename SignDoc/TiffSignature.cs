@@ -9,8 +9,16 @@ namespace SignDoc
 {
     class TiffSignature
     {
-        public static void SignDetachedResource(string ReferenceString, string XmlSigFileName, RSA Key, X509Certificate2 cert)
+        public static void SignDetachedResource(string inputFile, string outputSignatureXML, string certFile, String certPassword)
         {
+            X509Certificate2 certxml = new X509Certificate2(certFile, certPassword);
+
+            RSACryptoServiceProvider Key = (RSACryptoServiceProvider)certxml.PrivateKey;
+
+            
+            String XmlSigFileName = outputSignatureXML + ".firma.xml";
+
+            // Sign the detached resourceand save the signature in an XML file.
             // Create a SignedXml object.
             SignedXml signedXml = new SignedXml();
 
@@ -21,7 +29,7 @@ namespace SignDoc
             Reference reference = new Reference();
 
             // Add the passed Refrence to the reference object.
-            reference.Uri = ReferenceString;
+            reference.Uri = inputFile;
 
             // Add the reference to the SignedXml object.
             signedXml.AddReference(reference);
@@ -29,11 +37,11 @@ namespace SignDoc
             // Add an RSAKeyValue KeyInfo (optional; helps recipient find key to validate).
             KeyInfo keyInfo = new KeyInfo();
             keyInfo.AddClause(new RSAKeyValue((RSA)Key));
-            if (cert != null)
+            if (certxml != null)
             {
-                KeyInfoX509Data kinfox509 = new KeyInfoX509Data(cert, X509IncludeOption.EndCertOnly);
-                kinfox509.AddIssuerSerial(cert.Issuer, cert.SerialNumber);
-                kinfox509.AddSubjectName(cert.Subject);
+                KeyInfoX509Data kinfox509 = new KeyInfoX509Data(certxml, X509IncludeOption.EndCertOnly);
+                kinfox509.AddIssuerSerial(certxml.Issuer, certxml.SerialNumber);
+                kinfox509.AddSubjectName(certxml.Subject);
                 keyInfo.AddClause(kinfox509);
             }
             signedXml.KeyInfo = keyInfo;
