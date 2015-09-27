@@ -56,6 +56,9 @@
   <ItemGroup>
     <Compile Include="CertificateNotFoundInTokenException.cs" />
     <Compile Include="CertUtils.cs" />
+    <Compile Include="InvalidCertificatePasswordException.cs" />
+    <Compile Include="InvalidOutputFileException.cs" />
+    <Compile Include="InvalidTokenPasswordException.cs" />
     <Compile Include="PdfSignature.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

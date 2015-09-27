@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-
-
 using System.IO;
-
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Pkcs;
-
-using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
 
 namespace SignDoc
 {
@@ -102,6 +91,22 @@ namespace SignDoc
         */
         private static void ParseSignTiffToken(string[] args)
         {
+            if (!Validator.FileExist(args[1]))
+            {
+                throw new FileNotFoundException(args[1]);
+            }
+            if (args[2] == null || "".Equals(args[2]))
+            {
+                throw new InvalidOutputFileException();
+            }
+            if (args[3] == null || "".Equals(args[3]))
+            {
+                throw new InvalidTokenPasswordException();
+            }
+            if (!Validator.FileExist(args[3]))
+            {
+                throw new FileNotFoundException(args[3]);
+            }
             TiffSignature.SignDetachedResourceWithToken(args[0], args[1], args[2]);
         }
 
@@ -113,6 +118,22 @@ namespace SignDoc
      */
         private static void ParseSignTiffFile(string[] args)
         {
+            if (!Validator.FileExist(args[1]))
+            {
+                throw new FileNotFoundException(args[1]);
+            }
+            if (args[2] == null || "".Equals(args[2]))
+            {
+                throw new InvalidOutputFileException();
+            }
+            if (args[4] == null || "".Equals(args[4]))
+            {
+                throw new InvalidCertificatePasswordException();
+            }
+            if (!Validator.FileExist(args[3]))
+            {
+                throw new FileNotFoundException(args[3]);
+            }
             TiffSignature.SignDetachedResource(args[1], args[2], args[3], args[4]);
         }
 
@@ -129,15 +150,14 @@ namespace SignDoc
             {
                 throw new FileNotFoundException(args[1]);
             }
-            if (args[2] == null || "".Equals(args[3]))
+            if (args[2] == null || "".Equals(args[2]))
             {
-
+                throw new InvalidOutputFileException();
             }
             if (args[3] == null || "".Equals(args[3]))
             {
-
+                throw new InvalidTokenPasswordException();
             }
-
             PdfSignature.SignPdfToken(args[1], args[2], args[4], args[5], CertUtils.GetCertToken(), args[3]);
 
         }
@@ -152,6 +172,26 @@ namespace SignDoc
         */
         private static void ParseSignPdfFile(string[] args)
         {
+            if (!Validator.FileExist(args[1]))
+            {
+                throw new FileNotFoundException(args[1]);
+            }
+            if (args[2] == null || "".Equals(args[2]))
+            {
+                throw new InvalidOutputFileException();
+            }
+            if (args[3] == null || "".Equals(args[3]))
+            {
+                throw new InvalidTokenPasswordException();
+            }
+            if (!Validator.FileExist(args[5]))
+            {
+                throw new FileNotFoundException(args[5]);
+            }
+            if (args[6] == null || "".Equals(args[6]))
+            {
+                throw new InvalidCertificatePasswordException();
+            }
             PdfSignature.SignPdfCert(args[1], args[2], args[3],args[4], args[6], args[5]);
         }
 
