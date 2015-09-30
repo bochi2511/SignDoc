@@ -9,6 +9,8 @@ namespace SignDoc
         private static readonly int GENERAL_PROGRAM_ERROR = 1;
         private static readonly int BAD_PARAMETER_ERROR = 2;
         private static readonly int SIGNATURE_VERIFICATION_FAILED = 3;
+        private static readonly int FILE_NOT_FOUND = 4;
+        private static Boolean log = false;
 
         public static void Main(string[] args)
         {
@@ -20,6 +22,13 @@ namespace SignDoc
             /*
             args[0] = mode := signpdffile|signpdftoken|signtifffile|signtifftoken|validatetiff|validatepdf 
             */
+            if ("logon".Equals(args[0]))
+            {
+                log = true;
+                String[] newargs = new String[args.Length - 1];
+                Array.ConstrainedCopy(args, 1, newargs, 0, args.Length - 1);
+                args = newargs;
+            }
             System.Console.WriteLine("Starting SignDoc in mode:" + args[0]);
             try
             {
@@ -54,12 +63,21 @@ namespace SignDoc
             }
             catch (SignatureVerificacionException e)
             {
-                System.Console.WriteLine("SignDoc ends with exception " + e.Message);
+                System.Console.WriteLine("SignDoc ends with exception " + e.GetType().ToString() + ", " + e.Message);
                 System.Environment.Exit(SIGNATURE_VERIFICATION_FAILED);
+            }
+            catch (FileNotFoundException e)
+            {
+                System.Console.WriteLine("SignDoc ends with exception " + e.GetType().ToString() + ", " + e.Message);
+                if (log)
+                    System.Console.WriteLine(e.StackTrace);
+                System.Environment.Exit(FILE_NOT_FOUND);
             }
             catch (Exception e)
             {
-                System.Console.WriteLine("SignDoc ends with exception " +  e.Message);
+                System.Console.WriteLine("SignDoc ends with exception " + e.GetType().ToString() + ", " + e.Message);
+                if (log)
+                    System.Console.WriteLine(e.StackTrace);
                 System.Environment.Exit(GENERAL_PROGRAM_ERROR);
             }
             Environment.Exit(0);
@@ -198,7 +216,8 @@ namespace SignDoc
         private static void ExitWithBadParams()
         {
             System.Console.WriteLine("Error bad parameters");
-            System.Console.WriteLine("Use: SignDoc ");
+            System.Console.WriteLine("Use: SignDoc <mode> [params]");
+            System.Console.WriteLine("mode := signpdffile|signpdftoken|signtifffile|signtifftoken|validatetiff|validatepdf ");
             System.Environment.Exit(BAD_PARAMETER_ERROR);
         }
 
