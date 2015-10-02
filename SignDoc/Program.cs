@@ -1,16 +1,18 @@
-﻿using System;
+﻿using Org.BouncyCastle.X509;
+using System;
 using System.IO;
 
 namespace SignDoc
 {
+    
     class Program
     {
  
         private static readonly int GENERAL_PROGRAM_ERROR = 1;
         private static readonly int BAD_PARAMETER_ERROR = 2;
         private static readonly int SIGNATURE_VERIFICATION_FAILED = 3;
-
-        public static void Main(string[] args)
+            
+public static void Main(string[] args)
         {
             //Test();
             if (args.Length < 1)
@@ -18,7 +20,7 @@ namespace SignDoc
                 ExitWithBadParams();
             }
             /*
-            args[0] = mode := signpdffile|signpdftoken|signtifffile|signtifftoken|validatetiff|validatepdf 
+            args[0] = mode := signpdffile|signpdftoken|signtifffile|signtifftoken|validatetiff|validatepdf|getpdfinfo|gettiffinfo|gettokeninfo
             */
             System.Console.WriteLine("Starting SignDoc in mode:" + args[0]);
             try
@@ -47,6 +49,18 @@ namespace SignDoc
                 {
                     ParseValiedatePdf(args);
                 }
+                else if ("getpdfinfo".Equals(args[0]))
+                {
+                    ParseGetPdfInfo(args);
+                }
+                else if ("gettiffinfo".Equals(args[0]))
+                {
+                    ParseGetTiffInfo(args);
+                }
+                else if ("gettokeninfo".Equals(args[0]))
+                {
+                    ParseGetTokenInfo();
+                }
                 else
                 {
                     ExitWithBadParams();
@@ -65,11 +79,34 @@ namespace SignDoc
             Environment.Exit(0);
         }
 
-       
+        
+        private static void ParseGetTokenInfo()
+        {
+            CertUtils.GetTokenInfo();
+        }
+        /*
+        args[1] tiff file input
+        */
+        private static void ParseGetTiffInfo(string[] args)
+        {
+            TiffSignature.GetTiffInfo(args[1]);
+        }
 
+        /*
+        args[1] pdf file input
+        */
+        private static void ParseGetPdfInfo(string[] args)
+        {
+            PdfSignature.InspectSignatures(args[1]);
+        }
+        
+        /*
+        args[1] pdf file input
+        */
         private static void ParseValiedatePdf(string[] args)
         {
-            
+
+            var retcode = PdfSignature.VerificaFirma(args[1]);
         }
 
         /*

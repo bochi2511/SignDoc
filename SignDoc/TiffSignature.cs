@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -40,7 +41,7 @@ namespace SignDoc
             keyInfo.AddClause(new RSAKeyValue((RSA)Key));
             if (certxml != null)
             {
-                KeyInfoX509Data kinfox509 = new KeyInfoX509Data(certxml, X509IncludeOption.EndCertOnly);
+                KeyInfoX509Data kinfox509 = new KeyInfoX509Data(certxml, X509IncludeOption.WholeChain);
                 kinfox509.AddIssuerSerial(certxml.Issuer, certxml.SerialNumber);
                 kinfox509.AddSubjectName(certxml.Subject);
                 keyInfo.AddClause(kinfox509);
@@ -59,6 +60,48 @@ namespace SignDoc
             XmlTextWriter xmltw = new XmlTextWriter(XmlSigFileName, new UTF8Encoding(false));
             xmlDigitalSignature.WriteTo(xmltw);
             xmltw.Close();
+        }
+        public static void GetTiffInfo(string XmlSigFileName)
+        {
+            // Create a new XML document.
+            XmlDocument xmlDocument = new XmlDocument();
+
+            // Load the passed XML file into the document.
+            xmlDocument.Load(XmlSigFileName);
+
+            // Create a new SignedXMl object.
+            SignedXml signedXml = new SignedXml();
+
+            // Find the "Signature" node and create a new 
+            // XmlNodeList object.
+            XmlNodeList nodeList = xmlDocument.GetElementsByTagName("Signature");
+
+            // Load the signature node.
+            signedXml.LoadXml((XmlElement)nodeList[0]);
+
+            // Check the signature and return the result. 
+            IEnumerator enumerator = signedXml.KeyInfo.GetEnumerator();
+
+            X509Certificate2 cert = new X509Certificate2();
+
+            while (enumerator.MoveNext())
+            {
+                if (enumerator.Current is KeyInfoX509Data)
+                {
+                    var current = (KeyInfoX509Data)enumerator.Current;
+                    if (current.Certificates.Count != 0)
+                    {
+                        cert = (X509Certificate2) current.Certificates[0];
+                        break;
+                    }
+                }
+            }
+            Console.WriteLine("Emisor: " + cert.Issuer);
+            Console.WriteLine("Subject: " + cert.Subject);
+            Console.WriteLine("Serial: " + cert.SerialNumber);
+            Console.WriteLine("Thumbprint: " + cert.Thumbprint);
+            Console.WriteLine("Valido desde: " + cert.NotBefore);
+            Console.WriteLine("Válido hasta: " + cert.NotAfter);
         }
         public static Boolean VerifyDetachedSignature(string XmlSigFileName)
         {

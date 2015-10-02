@@ -44,5 +44,36 @@ namespace SignDoc
                 return cert;
             }
         }
+
+        public static void GetTokenInfo()
+        {
+            X509Store store = new X509Store("My");
+            store.Open(OpenFlags.ReadOnly);
+            foreach (X509Certificate2 cert2 in store.Certificates)
+            {
+                if (cert2.HasPrivateKey)
+                {
+                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)cert2.PrivateKey;
+                    if (rsa == null) continue; // not smart card cert again
+                    if (rsa.CspKeyContainerInfo.HardwareDevice) // sure - smartcard
+                    {
+                        Console.WriteLine("=======================================================================");
+                        Console.WriteLine("Issuer: " + cert2.Issuer);
+                        Console.WriteLine("Subject: " + cert2.Subject);
+                        Console.WriteLine("Serial: " + cert2.SerialNumber);
+                        Console.WriteLine("ProviderName: " + rsa.CspKeyContainerInfo.ProviderName);
+                        Console.WriteLine("KeyContainerName: " + rsa.CspKeyContainerInfo.KeyContainerName);
+                        foreach (X509Extension extension in cert2.Extensions)
+                        {
+                            if (extension.Oid.FriendlyName == "Key Usage")
+                            {
+                                X509KeyUsageExtension ext = (X509KeyUsageExtension)extension;
+                                Console.WriteLine("Key Usage: " + ext.KeyUsages);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
