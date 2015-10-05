@@ -51,8 +51,8 @@ namespace SignDoc
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Crypto error: " + ex.Message);
-                return;
+                Console.WriteLine("Crypto error: " + ex.Message + " " + ex.GetType().ToString());
+                throw ex;
             }
 
             //Org.BouncyCastle.X509.X509CertificateParser cp = new Org.BouncyCastle.X509.X509CertificateParser();

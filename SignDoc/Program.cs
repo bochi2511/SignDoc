@@ -22,7 +22,8 @@ namespace SignDoc
                 ExitWithBadParams();
             }
             /*
-            args[0] = mode := signpdffile|signpdftoken|signtifffile|signtifftoken|validatetiff|validatepdf|getpdfinfo|gettiffinfo|gettokeninfo
+            args[0] = mode := signpdffile|signpdftoken|signtifffile|signtifftoken|validatetiff|}
+                              validatepdf|getpdfinfo|gettiffinfo|gettokeninfo
             */
             if ("logon".Equals(args[0]))
             {
@@ -158,11 +159,8 @@ namespace SignDoc
             {
                 throw new InvalidTokenPasswordException();
             }
-            if (!Validator.FileExist(args[3]))
-            {
-                throw new FileNotFoundException(args[3]);
-            }
-            TiffSignature.SignDetachedResourceWithToken(args[0], args[1], args[2]);
+            
+            TiffSignature.SignDetachedResourceWithToken(args[1], args[2], args[3]);
         }
 
         /*
@@ -213,7 +211,7 @@ namespace SignDoc
             {
                 throw new InvalidTokenPasswordException();
             }
-            PdfSignature.SignPdfToken(args[1], args[2], args[4], args[5], CertUtils.GetCertToken(), args[3]);
+            PdfSignature.SignPdfToken(args[1], args[2], args[3], args[4], CertUtils.GetCertToken(), args[5]);
 
         }
 
