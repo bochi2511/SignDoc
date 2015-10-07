@@ -1,0 +1,71 @@
+Comandos SignDoc
+
+Consideraciones antes de firmar con tokens o certificados.
+
+Todos los certificados deben estar importados en Windows, incluidos los certificados RAIZ del banco central
+para el caso de los Tokens, estos certificados van dentro del zip para que no tengas que buscarlos
+
+El AC RAIZ tiene que ser importado como cerficado RAIZ de confianza del sistema operativo (se debe elegir manualmente).
+EL AC SUBOARDINADO como certificado subordinado (se coloca automaticamente en la mayoria de los casos). 
+
+Obtener datos de los certificados disponibles para utilizar presentes en el Token conectado:
+SignDoc gettokeninfo
+
+Firma PDF con certificado en TOKEN
+SignDoc signpdffile inputfilepdf outputfilepdf reason location tokenpassword
+
+Firma PDF con certificado en archivo
+SignDoc signpdffile inputfilepdf outputfilepdf reason location certfile certpassword
+
+Firma TIFF con certificado en TOKEN
+SignDoc signtifftoken inputfiletiff outputsignaturexml tokenpassword
+
+Firma TIFF con certificado en archivo
+SignDoc signtifffile inputfiletiff outputsignaturexml certfile certpassword
+
+Validar TIFF
+SignDoc validatetiff signaturexml
+
+Obtener datos de una firma TIFF
+SignDoc gettiffinfo inputfilesignaturexml
+
+Obtener datos de una firma PDF
+SignDoc gettiffinfo inputfilesignedpdf
+
+
+
+Los archivos a firmar o a verificar tienen que estar en el mismo directorio que se esta ejecutando el programa
+
+ejemplo con archivos en zip:
+===================================================================================================
+SignDoc signpdffile 20130320.pdf 20130320_signed.pdf reason_prueba location_prueba sebasb.p12 peteco
+SignDoc signtifffile 27542.tiff 27542.signature.xml sebasb.p12 peteco
+
+SignDoc signpdftoken 20130320.pdf 20130320_signed.pdf reason_prueba location_prueba peteco
+
+
+
+===================================================================================================
+GETTOKENINFO
+===================================================================================================
+Salida de ejemplo:
+
+=======================================================================
+Issuer: CN=AC BANCO CENTRAL DEL ECUADOR, L=QUITO, OU=ENTIDAD DE CERTIFICACION DE
+ INFORMACION-ECIBCE, O=BANCO CENTRAL DEL ECUADOR, C=EC
+Subject: SERIALNUMBER=0000126205 + CN=JORGE WASHINGTON MOREIRA VERA, L=QUITO, OU
+=ENTIDAD DE CERTIFICACION DE INFORMACION-ECIBCE, O=BANCO CENTRAL DEL ECUADOR, C=
+EC
+Serial: 4E44F513
+ProviderName: eToken Base Cryptographic Provider
+KeyContainerName: p11#a28222455077f707
+=======================================================================
+Issuer: CN=AC BANCO CENTRAL DEL ECUADOR, L=QUITO, OU=ENTIDAD DE CERTIFICACION DE
+ INFORMACION-ECIBCE, O=BANCO CENTRAL DEL ECUADOR, C=EC
+Subject: SERIALNUMBER=0000126205 + CN=JORGE WASHINGTON MOREIRA VERA, L=QUITO, OU
+=ENTIDAD DE CERTIFICACION DE INFORMACION-ECIBCE, O=BANCO CENTRAL DEL ECUADOR, C=
+EC
+Serial: 4E44F512
+ProviderName: eToken Base Cryptographic Provider
+KeyContainerName: p11#8e6b327c95aa4808
+===================================================================================================

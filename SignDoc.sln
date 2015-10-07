@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignDoc", "SignDoc\SignDoc.
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SignDocSetup", "SignDocSetup\SignDocSetup.vdproj", "{EE3A5C79-C93A-4561-BE35-A632F023981C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{942505CE-CD3C-4B9E-8313-716901008043}"
+	ProjectSection(SolutionItems) = preProject
+		Comandos.txt = Comandos.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
