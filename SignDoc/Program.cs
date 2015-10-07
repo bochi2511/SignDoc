@@ -57,7 +57,7 @@ namespace SignDoc
                 }
                 else if ("validatepdf".Equals(args[0]))
                 {
-                    ParseValiedatePdf(args);
+                    Environment.Exit(ParseValiedatePdf(args));
                 }
                 else if ("getpdfinfo".Equals(args[0]))
                 {
@@ -122,10 +122,10 @@ namespace SignDoc
         /*
         args[1] pdf file input
         */
-        private static void ParseValiedatePdf(string[] args)
+        private static int ParseValiedatePdf(string[] args)
         {
             
-            var retcode = PdfSignature.VerificaFirma(args[1]);
+            return PdfSignature.VerificaFirma(args[1]);
         }
 
         /*

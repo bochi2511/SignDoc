@@ -32,17 +32,20 @@ SignDoc gettiffinfo inputfilesignaturexml
 Obtener datos de una firma PDF
 SignDoc gettiffinfo inputfilesignedpdf
 
-
-
 Los archivos a firmar o a verificar tienen que estar en el mismo directorio que se esta ejecutando el programa
 
 ejemplo con archivos en zip:
 ===================================================================================================
-SignDoc signpdffile 20130320.pdf 20130320_signed.pdf reason_prueba location_prueba sebasb.p12 peteco
-SignDoc signtifffile 27542.tiff 27542.signature.xml sebasb.p12 peteco
-
-SignDoc signpdftoken 20130320.pdf 20130320_signed.pdf reason_prueba location_prueba peteco
-
+SignDoc signpdffile 20130320.pdf 20130320_signed_certfile.pdf reason_prueba location_prueba sebasb.p12 peteco
+SignDoc signtifffile 27542.tif 27542_signature_certfile.xml sebasb.p12 peteco
+SignDoc signpdftoken 20130320.pdf 20130320_signed_token.pdf reason_prueba location_prueba YaneriL2110
+SignDoc signtifftoken 27542.tif 27542_signature_token.xml YaneriL2110
+SignDoc validatetiff 27542_signature_token.xml
+SignDoc validatetiff 27542_signature_certfile.xml
+SignDoc validatepdf 20130320_signed_token.pdf
+SignDoc validatepdf 20130320_signed_certfile.pdf
+SignDoc gettiffinfo 27542_signature_token.xml
+SignDoc getpdfinfo 20130320_signed_token.pdf
 
 
 ===================================================================================================
