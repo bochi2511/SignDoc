@@ -30,7 +30,7 @@ namespace SignDoc
         private static readonly int VAL_OK_CER_VALID_NOCRLOROCSP = 25;
 
 
-        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword)
+        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String llx, String lly, String urx, String ury)
         {
             var pass = new SecureString();
             foreach (char c in tokenPassword.ToCharArray())
@@ -73,13 +73,13 @@ namespace SignDoc
             signatureAppearance.Reason = Reason;
             signatureAppearance.Location = Location;
             signatureAppearance.CertificationLevel = PdfSignatureAppearance.CERTIFIED_NO_CHANGES_ALLOWED;
-            signatureAppearance.SetVisibleSignature(new Rectangle(36, 748, 144, 780), 1, "sig");
+            signatureAppearance.SetVisibleSignature(new Rectangle(float.Parse(llx), float.Parse(lly), float.Parse(urx), float.Parse(ury)), 1, "sig");
             //signatureAppearance.SignatureRenderingMode = PdfSignatureAppearance.RenderingMode.DESCRIPTION;
             MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CMS);
             //MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CADES);
         }
 
-        public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile)
+        public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile, String llx, String lly, String urx, String ury)
         {
             Pkcs12Store p12ks = new Pkcs12Store();
             FileStream fs = new FileStream(certFile, FileMode.Open);
@@ -112,7 +112,7 @@ namespace SignDoc
             //here set signatureAppearance at your will
             signatureAppearance.Reason = Reason;
             signatureAppearance.Location = Location;
-            signatureAppearance.SetVisibleSignature(new Rectangle(36, 748, 144, 780), 1, "sig");
+            signatureAppearance.SetVisibleSignature(new Rectangle(float.Parse(llx), float.Parse(lly), float.Parse(urx), float.Parse(ury)), 1, "sig");
             //signatureAppearance.SignatureRenderingMode = PdfSignatureAppearance.RenderingMode.DESCRIPTION;
             MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CMS);
             //MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CADES);

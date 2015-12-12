@@ -211,7 +211,7 @@ namespace SignDoc
             {
                 throw new InvalidTokenPasswordException();
             }
-            PdfSignature.SignPdfToken(args[1], args[2], args[3], args[4], CertUtils.GetCertToken(), args[5]);
+            PdfSignature.SignPdfToken(args[1], args[2], args[3], args[4], CertUtils.GetCertToken(), args[5], args[6], args[7], args[8], args[9]);
 
         }
 
@@ -245,7 +245,7 @@ namespace SignDoc
             {
                 throw new InvalidCertificatePasswordException();
             }
-            PdfSignature.SignPdfCert(args[1], args[2], args[3],args[4], args[6], args[5]);
+            PdfSignature.SignPdfCert(args[1], args[2], args[3],args[4], args[6], args[5], args[7], args[8], args[9], args[10]);
         }
 
         private static void ExitWithBadParams()
