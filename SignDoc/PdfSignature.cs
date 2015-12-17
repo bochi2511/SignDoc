@@ -30,20 +30,21 @@ namespace SignDoc
         private static readonly int VAL_OK_CER_VALID_NOCRLOROCSP = 25;
 
 
-        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String llx, String lly, String urx, String ury)
+        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String llx, String lly, String urx, String ury, String keyContainerName)
         {
             var pass = new SecureString();
             foreach (char c in tokenPassword.ToCharArray())
             {
                 pass.AppendChar(c);
             }
-
+            Console.WriteLine("Password cargada");
 
             CspParameters csp = new CspParameters(1,
                                                     CertUtils.ProviderName,
-                                                    CertUtils.KeyContainerName,
+                                                    keyContainerName,
                                                     new System.Security.AccessControl.CryptoKeySecurity(),
                                                     pass);
+            Console.WriteLine("CSP cargada");
             try
             {
                 RSACryptoServiceProvider rsaCsp = new RSACryptoServiceProvider(csp);
@@ -54,7 +55,7 @@ namespace SignDoc
                 Console.WriteLine("Crypto error: " + ex.Message + " " + ex.GetType().ToString());
                 throw ex;
             }
-
+            Console.WriteLine("Crypto Provider cargado");
             //Org.BouncyCastle.X509.X509CertificateParser cp = new Org.BouncyCastle.X509.X509CertificateParser();
             //Org.BouncyCastle.X509.X509Certificate[] chain = new Org.BouncyCastle.X509.X509Certificate[] { cp.ReadCertificate(cert.RawData) };
             IList<X509Certificate> chain = new List<X509Certificate>();
