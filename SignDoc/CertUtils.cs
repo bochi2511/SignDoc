@@ -10,7 +10,8 @@ namespace SignDoc
 {
     class CertUtils
     {
-        public const String KeyContainerName = "p11#a28222455077f707";
+        //public const String KeyContainerName = "p11#a28222455077f707"; // Jorge Moreira
+        public const String KeyContainerName = "p11#05c56736152ef298"; // Cliente 
         public const String ProviderName = "eToken Base Cryptographic Provider";
 
         public static X509Certificate2 GetCertToken() {

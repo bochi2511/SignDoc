@@ -74,6 +74,7 @@
     <Compile Include="CertificateNotFoundInTokenException.cs" />
     <Compile Include="CertUtils.cs" />
     <Compile Include="InvalidCertificatePasswordException.cs" />
+    <Compile Include="InvalidKeyContainerNameException.cs" />
     <Compile Include="InvalidOutputFileException.cs" />
     <Compile Include="InvalidTokenPasswordException.cs" />
     <Compile Include="PdfSignature.cs" />

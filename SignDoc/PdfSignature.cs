@@ -29,8 +29,12 @@ namespace SignDoc
         private static readonly int CER_STATUS_NOT_VERIFIED = 25;
         private static readonly int VAL_OK_CER_VALID_NOCRLOROCSP = 25;
 
-
-        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String llx, String lly, String urx, String ury, String keyContainerName)
+        
+        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String keyContainerName)
+        {
+            SignPdfToken(SRC, DEST, Reason, Location, cert, tokenPassword, keyContainerName, "36", "748", "144", "780");
+        }
+        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String keyContainerName, String llx, String lly, String urx, String ury)
         {
             var pass = new SecureString();
             foreach (char c in tokenPassword.ToCharArray())
@@ -78,6 +82,11 @@ namespace SignDoc
             //signatureAppearance.SignatureRenderingMode = PdfSignatureAppearance.RenderingMode.DESCRIPTION;
             MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CMS);
             //MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CADES);
+        }
+
+        public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile)
+        {
+            SignPdfCert(SRC, DEST, Reason, Location, certPassword, certFile, "36", "748", "144", "780");
         }
 
         public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile, String llx, String lly, String urx, String ury)

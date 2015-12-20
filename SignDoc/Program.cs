@@ -159,8 +159,12 @@ namespace SignDoc
             {
                 throw new InvalidTokenPasswordException();
             }
-            
-            TiffSignature.SignDetachedResourceWithToken(args[1], args[2], args[3]);
+            if (args[4] == null || "".Equals(args[4]))
+            {
+                throw new InvalidKeyContainerNameException();
+            }
+
+            TiffSignature.SignDetachedResourceWithToken(args[1], args[2], args[3], args[4]);
         }
 
         /*
@@ -211,7 +215,21 @@ namespace SignDoc
             {
                 throw new InvalidTokenPasswordException();
             }
-            PdfSignature.SignPdfToken(args[1], args[2], args[3], args[4], CertUtils.GetCertToken(), args[5], args[6], args[7], args[8], args[9], args);
+            if (args[3] == null || "".Equals(args[3]))
+            {
+                throw new InvalidTokenPasswordException();
+            }
+            if (args[6] == null || "".Equals(args[6]))
+            {
+                throw new InvalidKeyContainerNameException();
+            }
+            if ((args.Length > 10) && (args[7] != null && args[8] != null && args[9] != null && args[10] != null))
+            {
+                PdfSignature.SignPdfToken(args[1], args[2], args[3], args[4], CertUtils.GetCertToken(), args[5], args[6], args[7], args[8], args[9], args[10]);
+            } else
+            {
+                PdfSignature.SignPdfToken(args[1], args[2], args[3], args[4], CertUtils.GetCertToken(), args[5], args[6]);
+            }
 
         }
 
@@ -245,7 +263,15 @@ namespace SignDoc
             {
                 throw new InvalidCertificatePasswordException();
             }
-            PdfSignature.SignPdfCert(args[1], args[2], args[3],args[4], args[6], args[5], args[7], args[8], args[9], args[10]);
+            if ((args.Length > 10) && (args[7] != null && args[8] != null && args[9] != null && args[10] != null))
+            {
+                System.Console.WriteLine("SignPdfCert with size: " + args.Length);
+                PdfSignature.SignPdfCert(args[1], args[2], args[3], args[4], args[6], args[5], args[7], args[8], args[9], args[10]);
+            }
+            else
+            {
+                PdfSignature.SignPdfCert(args[1], args[2], args[3], args[4], args[6], args[5]);
+            }
         }
 
         private static void ExitWithBadParams()

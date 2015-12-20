@@ -125,7 +125,7 @@ namespace SignDoc
             return signedXml.CheckSignature();
         }
 
-        public static void SignDetachedResourceWithToken(String inputFile, String outputXmlFile, String tokenPassword)
+        public static void SignDetachedResourceWithToken(String inputFile, String outputXmlFile, String tokenPassword, String KeyContainerName)
         {
             var pass = new SecureString();
             foreach (char c in tokenPassword.ToCharArray())
@@ -136,7 +136,7 @@ namespace SignDoc
 
             CspParameters csp = new CspParameters(1,
                                                     CertUtils.ProviderName,
-                                                    CertUtils.KeyContainerName,
+                                                    KeyContainerName,
                                                     new System.Security.AccessControl.CryptoKeySecurity(),
                                                     pass);
             try
