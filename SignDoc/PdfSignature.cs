@@ -48,6 +48,7 @@ namespace SignDoc
                                                     keyContainerName,
                                                     new System.Security.AccessControl.CryptoKeySecurity(),
                                                     pass);
+         
             Console.WriteLine("CSP cargada");
             try
             {

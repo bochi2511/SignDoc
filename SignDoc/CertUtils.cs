@@ -14,7 +14,7 @@ namespace SignDoc
         public const String KeyContainerName = "p11#05c56736152ef298"; // Cliente 
         public const String ProviderName = "eToken Base Cryptographic Provider";
 
-        public static X509Certificate2 GetCertToken() {
+        public static X509Certificate2 GetCertToken(String keyContainerName) {
             X509Store store = new X509Store("My");
             store.Open(OpenFlags.ReadOnly);
             X509Certificate2 cert = null;
@@ -27,7 +27,7 @@ namespace SignDoc
                     if (rsa == null) continue; // not smart card cert again
                     if (rsa.CspKeyContainerInfo.HardwareDevice) // sure - smartcard
                     {
-                        if ((rsa.CspKeyContainerInfo.KeyContainerName == KeyContainerName) && (rsa.CspKeyContainerInfo.ProviderName == ProviderName))
+                        if ((rsa.CspKeyContainerInfo.KeyContainerName == keyContainerName) && (rsa.CspKeyContainerInfo.ProviderName == ProviderName))
                         {
                             //we find it
                             cert = cert2;
