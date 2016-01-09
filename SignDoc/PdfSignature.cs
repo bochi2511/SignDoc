@@ -32,9 +32,9 @@ namespace SignDoc
         
         public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String keyContainerName)
         {
-            SignPdfToken(SRC, DEST, Reason, Location, cert, tokenPassword, keyContainerName, "36", "748", "144", "780");
+            SignPdfToken(SRC, DEST, Reason, Location, cert, tokenPassword, keyContainerName, "36", "748", "144", "780", 8);
         }
-        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String keyContainerName, String llx, String lly, String urx, String ury)
+        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String keyContainerName, String llx, String lly, String urx, String ury, int fontSize)
         {
             var pass = new SecureString();
             foreach (char c in tokenPassword.ToCharArray())
@@ -78,6 +78,8 @@ namespace SignDoc
             //here set signatureAppearance at your will
             signatureAppearance.Reason = Reason;
             signatureAppearance.Location = Location;
+            BaseFont bf = BaseFont.CreateFont();
+            signatureAppearance.Layer2Font = new Font(bf, fontSize);
             signatureAppearance.CertificationLevel = PdfSignatureAppearance.CERTIFIED_NO_CHANGES_ALLOWED;
             signatureAppearance.SetVisibleSignature(new Rectangle(float.Parse(llx), float.Parse(lly), float.Parse(urx), float.Parse(ury)), 1, "sig");
             //signatureAppearance.SignatureRenderingMode = PdfSignatureAppearance.RenderingMode.DESCRIPTION;
@@ -87,10 +89,10 @@ namespace SignDoc
 
         public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile)
         {
-            SignPdfCert(SRC, DEST, Reason, Location, certPassword, certFile, "36", "748", "144", "780");
+            SignPdfCert(SRC, DEST, Reason, Location, certPassword, certFile, "36", "748", "144", "780", 8);
         }
 
-        public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile, String llx, String lly, String urx, String ury)
+        public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile, String llx, String lly, String urx, String ury, int fontSize)
         {
             Pkcs12Store p12ks = new Pkcs12Store();
             FileStream fs = new FileStream(certFile, FileMode.Open);
@@ -123,6 +125,8 @@ namespace SignDoc
             //here set signatureAppearance at your will
             signatureAppearance.Reason = Reason;
             signatureAppearance.Location = Location;
+            BaseFont bf = BaseFont.CreateFont();
+            signatureAppearance.Layer2Font = new Font(bf, fontSize);
             signatureAppearance.SetVisibleSignature(new Rectangle(float.Parse(llx), float.Parse(lly), float.Parse(urx), float.Parse(ury)), 1, "sig");
             //signatureAppearance.SignatureRenderingMode = PdfSignatureAppearance.RenderingMode.DESCRIPTION;
             MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CMS);

@@ -223,9 +223,9 @@ namespace SignDoc
             {
                 throw new InvalidKeyContainerNameException();
             }
-            if ((args.Length > 10) && (args[7] != null && args[8] != null && args[9] != null && args[10] != null))
+            if ((args.Length > 10) && (args[7] != null && args[8] != null && args[9] != null && args[10] != null && args[11] != null))
             {
-                PdfSignature.SignPdfToken(args[1], args[2], args[3], args[4], CertUtils.GetCertToken(args[6]), args[5], args[6], args[7], args[8], args[9], args[10]);
+                PdfSignature.SignPdfToken(args[1], args[2], args[3], args[4], CertUtils.GetCertToken(args[6]), args[5], args[6], args[7], args[8], args[9], args[10], int.Parse(args[11]));
             } else
             {
                 PdfSignature.SignPdfToken(args[1], args[2], args[3], args[4], CertUtils.GetCertToken(args[6]), args[5], args[6]);
@@ -263,10 +263,10 @@ namespace SignDoc
             {
                 throw new InvalidCertificatePasswordException();
             }
-            if ((args.Length > 10) && (args[7] != null && args[8] != null && args[9] != null && args[10] != null))
+            if ((args.Length > 10) && (args[7] != null && args[8] != null && args[9] != null && args[10] != null && args[11] != null))
             {
                 System.Console.WriteLine("SignPdfCert with size: " + args.Length);
-                PdfSignature.SignPdfCert(args[1], args[2], args[3], args[4], args[6], args[5], args[7], args[8], args[9], args[10]);
+                PdfSignature.SignPdfCert(args[1], args[2], args[3], args[4], args[6], args[5], args[7], args[8], args[9], args[10], int.Parse(args[11]));
             }
             else
             {
