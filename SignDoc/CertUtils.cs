@@ -23,17 +23,23 @@ namespace SignDoc
             {
                 if (cert2.HasPrivateKey)
                 {
-                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)cert2.PrivateKey;
-                    if (rsa == null) continue; // not smart card cert again
-                    if (rsa.CspKeyContainerInfo.HardwareDevice) // sure - smartcard
-                    {
-                        if ((rsa.CspKeyContainerInfo.KeyContainerName == keyContainerName) && (rsa.CspKeyContainerInfo.ProviderName == ProviderName))
+                    try { 
+                        RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)cert2.PrivateKey;
+                        if (rsa == null) continue; // not smart card cert again
+                        if (rsa.CspKeyContainerInfo.HardwareDevice) // sure - smartcard
                         {
-                            //we find it
-                            cert = cert2;
-                            break;
+                            if ((rsa.CspKeyContainerInfo.KeyContainerName == keyContainerName) && (rsa.CspKeyContainerInfo.ProviderName == ProviderName))
+                            {
+                                //we find it
+                                cert = cert2;
+                                break;
+                            }
                         }
+                    } catch (CryptographicException c)
+                    {
+                        Console.WriteLine(c.GetType().ToString());
                     }
+                    
                 }
             }
             if (cert == null)
@@ -49,29 +55,42 @@ namespace SignDoc
         public static void GetTokenInfo()
         {
             X509Store store = new X509Store("My");
+            
             store.Open(OpenFlags.ReadOnly);
             foreach (X509Certificate2 cert2 in store.Certificates)
             {
+                
                 if (cert2.HasPrivateKey)
                 {
-                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)cert2.PrivateKey;
-                    if (rsa == null) continue; // not smart card cert again
-                    if (rsa.CspKeyContainerInfo.HardwareDevice) // sure - smartcard
+                 
+                    try
                     {
-                        Console.WriteLine("=======================================================================");
-                        Console.WriteLine("Issuer: " + cert2.Issuer);
-                        Console.WriteLine("Subject: " + cert2.Subject);
-                        Console.WriteLine("Serial: " + cert2.SerialNumber);
-                        Console.WriteLine("ProviderName: " + rsa.CspKeyContainerInfo.ProviderName);
-                        Console.WriteLine("KeyContainerName: " + rsa.CspKeyContainerInfo.KeyContainerName);
-                        foreach (X509Extension extension in cert2.Extensions)
+                        RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)cert2.PrivateKey;
+                        
+                        if (rsa == null) continue; // not smart card cert again
+                        if (rsa.CspKeyContainerInfo.HardwareDevice) // sure - smartcard
                         {
-                            if (extension.Oid.FriendlyName == "Key Usage")
+                            
+                            Console.WriteLine("=======================================================================");
+                            Console.WriteLine("Issuer: " + cert2.Issuer);
+                            Console.WriteLine("Subject: " + cert2.Subject);
+                            Console.WriteLine("Serial: " + cert2.SerialNumber);
+                            Console.WriteLine("ProviderName: " + rsa.CspKeyContainerInfo.ProviderName);
+                            Console.WriteLine("KeyContainerName: " + rsa.CspKeyContainerInfo.KeyContainerName);
+                            foreach (X509Extension extension in cert2.Extensions)
                             {
-                                X509KeyUsageExtension ext = (X509KeyUsageExtension)extension;
-                                Console.WriteLine("Key Usage: " + ext.KeyUsages);
+                                if (extension.Oid.FriendlyName == "Key Usage")
+                                {
+                                    X509KeyUsageExtension ext = (X509KeyUsageExtension)extension;
+                                    Console.WriteLine("Key Usage: " + ext.KeyUsages);
+                                }
                             }
                         }
+                    }
+                    catch (CryptographicException c)
+                    {
+                        Console.WriteLine("Serial: " + cert2.SerialNumber);
+                        Console.WriteLine("No se tiene acceso a la clave privada");
                     }
                 }
             }

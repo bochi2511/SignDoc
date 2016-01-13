@@ -29,10 +29,15 @@ namespace SignDoc
         private static readonly int CER_STATUS_NOT_VERIFIED = 25;
         private static readonly int VAL_OK_CER_VALID_NOCRLOROCSP = 25;
 
-        
+
+
         public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String keyContainerName)
         {
             SignPdfToken(SRC, DEST, Reason, Location, cert, tokenPassword, keyContainerName, "36", "748", "144", "780", 8);
+        }
+        public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String keyContainerName, String llx, String lly, String urx, String ury)
+        {
+            SignPdfToken(SRC, DEST, Reason, Location, cert, tokenPassword, keyContainerName, llx, lly, urx, ury, 8);
         }
         public static void SignPdfToken(String SRC, String DEST, String Reason, String Location, X509Certificate2 cert, String tokenPassword, String keyContainerName, String llx, String lly, String urx, String ury, int fontSize)
         {
@@ -90,6 +95,10 @@ namespace SignDoc
         public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile)
         {
             SignPdfCert(SRC, DEST, Reason, Location, certPassword, certFile, "36", "748", "144", "780", 8);
+        }
+        public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile, String llx, String lly, String urx, String ury)
+        {
+            SignPdfCert(SRC, DEST, Reason, Location, certPassword, certFile, llx, lly, urx, ury, 8);
         }
 
         public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile, String llx, String lly, String urx, String ury, int fontSize)
