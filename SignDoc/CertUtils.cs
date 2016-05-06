@@ -52,17 +52,23 @@ namespace SignDoc
             }
         }
 
+
+
         public static void GetTokenInfo()
         {
-            X509Store store = new X509Store("My");
+      
+            Program.logLine("Starting GetTokenInfo");
             
+            X509Store store = new X509Store("My");
+
+            Program.logLine(store.ToString());
             store.Open(OpenFlags.ReadOnly);
             foreach (X509Certificate2 cert2 in store.Certificates)
             {
-                
+                Program.logLine(cert2.ToString());
                 if (cert2.HasPrivateKey)
                 {
-                 
+                    Program.logLine("Has Private Key");
                     try
                     {
                         RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)cert2.PrivateKey;

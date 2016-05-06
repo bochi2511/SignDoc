@@ -290,8 +290,21 @@ namespace SignDoc
             System.Environment.Exit(BAD_PARAMETER_ERROR);
         }
 
-       
-        
-        
+       public static bool isLoggerOn()
+        {
+            return log;
+        }
+
+
+        public static void logLine(String stringToLog)
+        {
+            if (isLoggerOn())
+            {
+                Console.WriteLine(stringToLog);
+            }
+            
+        }
+
+
     }
 }
