@@ -96,7 +96,7 @@ namespace SignDoc
                     catch (CryptographicException c)
                     {
                         Console.WriteLine("Serial: " + cert2.SerialNumber);
-                        Console.WriteLine("No se tiene acceso a la clave privada");
+                        Console.WriteLine("No se tiene acceso a la clave privada" + c.ToString());
                     }
                 }
             }
