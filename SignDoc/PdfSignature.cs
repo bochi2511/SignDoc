@@ -101,6 +101,13 @@ namespace SignDoc
             SignPdfCert(SRC, DEST, Reason, Location, certPassword, certFile, llx, lly, urx, ury, 8);
         }
 
+        public static void GetPdfSize(String pdfFile)
+        {
+            PdfReader pdfReader = new PdfReader(pdfFile);
+            Program.logLine("page size" + pdfReader.GetPageSize(1));
+            Console.WriteLine(pdfReader.GetPageSize(1).ToString().Substring(11, pdfReader.GetPageSize(1).ToString().IndexOf("(")-11));
+        }
+
         public static void SignPdfCert(String SRC, String DEST, String Reason, String Location, String certPassword, String certFile, String llx, String lly, String urx, String ury, int fontSize)
         {
             Pkcs12Store p12ks = new Pkcs12Store();
@@ -129,13 +136,15 @@ namespace SignDoc
             IExternalSignature externalSignature = new PrivateKeySignature(pk, DigestAlgorithms.SHA512);
             PdfReader pdfReader = new PdfReader(SRC);
             FileStream signedPdf = new FileStream(DEST, FileMode.Create);  //the output pdf file
+            Program.logLine("page size" + pdfReader.GetPageSize(1));
+            
             PdfStamper pdfStamper = PdfStamper.CreateSignature(pdfReader, signedPdf, '\0');
             PdfSignatureAppearance signatureAppearance = pdfStamper.SignatureAppearance;
             //here set signatureAppearance at your will
             signatureAppearance.Reason = Reason;
             signatureAppearance.Location = Location;
             BaseFont bf = BaseFont.CreateFont();
-            signatureAppearance.Layer2Font = new Font(bf, fontSize);
+            signatureAppearance.Layer2Font = new Font(bf, fontSize);           
             signatureAppearance.SetVisibleSignature(new Rectangle(float.Parse(llx), float.Parse(lly), float.Parse(urx), float.Parse(ury)), 1, "sig");
             //signatureAppearance.SignatureRenderingMode = PdfSignatureAppearance.RenderingMode.DESCRIPTION;
             MakeSignature.SignDetached(signatureAppearance, externalSignature, chain, null, null, null, 0, CryptoStandard.CMS);
@@ -323,11 +332,11 @@ namespace SignDoc
             }
             catch (CertificateExpiredException e)
             {
-                Console.WriteLine("El certificado estaba expirado al momento de la firma.");
+                Console.WriteLine("El certificado estaba expirado al momento de la firma. " + e.ToString());
             }
             catch (CertificateNotYetValidException e)
             {
-                Console.WriteLine("El certificado no era válido aún al momento de la firma.");
+                Console.WriteLine("El certificado no era válido aún al momento de la firma. " + e.ToString());
             }
             try
             {
@@ -336,11 +345,11 @@ namespace SignDoc
             }
             catch (CertificateExpiredException e)
             {
-                Console.WriteLine("El certificado ha expirado.");
+                Console.WriteLine("El certificado ha expirado. " + e.ToString());
             }
             catch (CertificateNotYetValidException e)
             {
-                Console.WriteLine("El certificado no es válido aún.");
+                Console.WriteLine("El certificado no es válido aún. " + e.ToString());
             }
         }
 

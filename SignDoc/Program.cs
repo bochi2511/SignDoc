@@ -71,6 +71,10 @@ namespace SignDoc
                 {
                     ParseGetTokenInfo();
                 }
+                else if ("getpdfsize".Equals(args[0]))
+                {
+                    ParseGetPdfSize(args);
+                }
                 else
                 {
                     ExitWithBadParams();
@@ -98,7 +102,10 @@ namespace SignDoc
             Environment.Exit(0);
         }
 
-       
+        private static void ParseGetPdfSize(string[] args)
+        {
+            PdfSignature.GetPdfSize(args[1]);
+        }
         private static void ParseGetTokenInfo()
         {
             CertUtils.GetTokenInfo();
@@ -247,6 +254,11 @@ namespace SignDoc
         */
         private static void ParseSignPdfFile(string[] args)
         {
+            int i = 0;
+            foreach(String s in args) {
+                Program.logLine(i + ", " + args[i]);
+                i++;
+            }
             if (!Validator.FileExist(args[1]))
             {
                 throw new FileNotFoundException(args[1]);
@@ -267,17 +279,19 @@ namespace SignDoc
             {
                 throw new InvalidCertificatePasswordException();
             }
-            if ((args.Length == 11) && (args[7] != null && args[8] != null && args[9] != null && args[10] != null))
+            if ((args.Length == 11) && ((args[7] != null) && (args[8] != null) && (args[9] != null) && (args[10] != null)))
             {
+                Program.logLine("SignPdfCert == 11: " + args.Length);
                 PdfSignature.SignPdfCert(args[1], args[2], args[3], args[4], args[6], args[5], args[7], args[8], args[9], args[10]);
             }
-            if ((args.Length > 11) && (args[7] != null && args[8] != null && args[9] != null && args[10] != null && args[11] != null))
+            else if ((args.Length > 11) && (args[7] != null && args[8] != null && args[9] != null && args[10] != null && args[11] != null))
             {
-                //System.Console.WriteLine("SignPdfCert with size: " + args.Length);
+                Program.logLine("SignPdfCert > 11: " + args.Length);
                 PdfSignature.SignPdfCert(args[1], args[2], args[3], args[4], args[6], args[5], args[7], args[8], args[9], args[10], int.Parse(args[11]));
             }
             else
             {
+                Program.logLine("SignPdfCert else: " + args.Length + ", " + args);
                 PdfSignature.SignPdfCert(args[1], args[2], args[3], args[4], args[6], args[5]);
             }
         }
